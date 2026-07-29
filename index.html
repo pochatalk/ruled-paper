@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>罫線紙ジェネレーター</title>
+<link rel="stylesheet" href="style.css">
+<script defer src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+</head>
+<body>
+<header class="top">
+  <h1>罫線紙ジェネレーター</h1>
+  <p>初期状態はB5・A罫（添付の再現）。設定を変えて印刷用PDFを作成できます。</p>
+</header>
+
+<div class="layout">
+  <!-- ===== 設定パネル ===== -->
+  <div class="panel">
+    <fieldset>
+      <legend>用紙</legend>
+      <div class="row"><label>サイズ</label>
+        <select id="paper">
+          <option value="B5">B5 (182×257mm)</option>
+          <option value="A4">A4 (210×297mm)</option>
+          <option value="A5">A5 (148×210mm)</option>
+          <option value="Letter">レター (215.9×279.4mm)</option>
+          <option value="custom">カスタム</option>
+        </select>
+      </div>
+      <div class="row" id="customWrap" style="display:none">
+        <label>幅×高 (mm)</label>
+        <span><input type="number" id="customW" value="182" style="width:56px"> × <input type="number" id="customH" value="257" style="width:56px"></span>
+      </div>
+      <div class="row"><label>向き</label>
+        <select id="orientation"><option value="portrait">縦</option><option value="landscape">横</option></select>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>罫線タイプ</legend>
+      <div class="type-tabs" id="typeTabs">
+        <button data-type="ruled" class="active">横罫</button>
+        <button data-type="grid">方眼</button>
+        <button data-type="dots">ドット</button>
+        <button data-type="plain">無地</button>
+      </div>
+
+      <!-- 横罫 -->
+      <div class="type-section" data-for="ruled">
+        <div class="presets" id="spacingPresets">
+          <button data-v="7">A罫 7mm</button>
+          <button data-v="6">B罫 6mm</button>
+          <button data-v="5">C罫 5mm</button>
+        </div>
+        <div class="row"><label>行間 (mm)</label><input type="number" id="spacing" value="7" step="0.5" min="2"></div>
+        <div class="checkrow"><input type="checkbox" id="endsSolid" checked><label for="endsSolid">上下端の線を実線にする</label></div>
+        <div class="checkrow"><input type="checkbox" id="ruledDash" checked><label for="ruledDash">中間の線を破線にする</label></div>
+        <div class="row"><label>中間線の太さ(pt)</label><input type="number" id="thinW" value="0.6" step="0.1" min="0.1"></div>
+        <div class="row"><label>端の線の太さ(pt)</label><input type="number" id="thickW" value="0.9" step="0.1" min="0.1"></div>
+      </div>
+
+      <!-- 方眼 -->
+      <div class="type-section" data-for="grid" style="display:none">
+        <div class="row"><label>マス目 (mm)</label><input type="number" id="cell" value="5" step="0.5" min="1"></div>
+        <div class="checkrow"><input type="checkbox" id="gridDash"><label for="gridDash">破線にする</label></div>
+        <div class="row"><label>線の太さ(pt)</label><input type="number" id="gridW" value="0.6" step="0.1" min="0.1"></div>
+      </div>
+
+      <!-- ドット -->
+      <div class="type-section" data-for="dots" style="display:none">
+        <div class="row"><label>点間隔 (mm)</label><input type="number" id="dotGap" value="5" step="0.5" min="1"></div>
+        <div class="row"><label>ドット径 (mm)</label><input type="number" id="dotR" value="0.4" step="0.1" min="0.1"></div>
+      </div>
+
+      <!-- 無地 -->
+      <div class="type-section" data-for="plain" style="display:none">
+        <p class="hint">罫線なし。ヘッダーとマージンのみ適用されます。</p>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>線の色</legend>
+      <div class="row"><label>罫線・ドットの色</label><input type="color" id="lineColor" value="#B3CCE0"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>ヘッダー（左 / 中央 / 右）</legend>
+      <div class="row"><label>左</label><input type="text" class="wide" id="hLeft" value=""></div>
+      <div class="row"><label>中央</label><input type="text" class="wide" id="hCenter" value=""></div>
+      <div class="row"><label>右</label><input type="text" class="wide" id="hRight" value="No.　月　日"></div>
+      <div class="row"><label>文字サイズ(pt)</label><input type="number" id="headerSize" value="11" step="0.5" min="5"></div>
+      <p class="hint">空欄にするとその欄は非表示。全ページ共通で表示されます。</p>
+    </fieldset>
+
+    <fieldset>
+      <legend>マージン (mm)</legend>
+      <div class="row"><label>上</label><input type="number" id="marginTop" value="19" step="1" min="0"></div>
+      <div class="row"><label>下</label><input type="number" id="marginBottom" value="21" step="1" min="0"></div>
+      <div class="row"><label>左</label><input type="number" id="marginLeft" value="18" step="1" min="0"></div>
+      <div class="row"><label>右</label><input type="number" id="marginRight" value="18" step="1" min="0"></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>出力</legend>
+      <div class="row"><label>枚数</label><input type="number" id="pages" value="1" min="1" max="100"></div>
+      <p class="hint">印刷時は「実際のサイズ（100%・余白なし）」を選ぶと寸法が正確になります。</p>
+    </fieldset>
+
+    <div class="actions">
+      <button id="btnPdf">PDFをダウンロード</button>
+      <button id="btnPrint">ブラウザで印刷</button>
+      <button id="btnReset">添付の初期設定に戻す</button>
+    </div>
+  </div>
+
+  <!-- ===== プレビュー ===== -->
+  <div class="preview-wrap">
+    <div class="preview-note" id="note"></div>
+    <div id="preview"></div>
+  </div>
+</div>
+
+<div id="printArea"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
