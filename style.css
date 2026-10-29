@@ -1,5 +1,6 @@
 :root{
   --bg:#f5f6f8; --panel:#fff; --line:#e2e5ea; --accent:#3b6fb0; --text:#222; --muted:#777;
+  --control-border:#9aa3b2;
   --font-jp:"Zen Maru Gothic","Helvetica Neue",Helvetica,Arial,sans-serif;
   --font-en:"Jost","Helvetica Neue",Helvetica,Arial,sans-serif;
 }
@@ -17,15 +18,22 @@ fieldset{ border:1px solid var(--line); border-radius:0; margin:0 0 14px; paddin
 legend{ font-size:12px; font-weight:700; color:var(--accent); padding:0 6px; }
 .row{ display:flex; align-items:center; justify-content:space-between; margin:8px 0; gap:8px; }
 .row label{ font-size:13px; color:#444; flex:none; }
-.row input[type=number], .row input[type=text], .row select{ width:120px; padding:5px 7px; border:1px solid var(--line); border-radius:0; font-size:13px; }
+.row input[type=number], .row input[type=text], .row select{ width:120px; padding:5px 7px; border:1px solid var(--control-border); border-radius:0; font-size:13px; }
 .row input[type=text].wide{ width:150px; }
-.row input[type=color]{ width:44px; height:28px; padding:0; border:1px solid var(--line); border-radius:0; background:none; }
+.row input[type=color]{ width:44px; height:28px; padding:0; border:1px solid var(--control-border); border-radius:0; background:none; }
 .presets{ display:flex; gap:6px; margin:4px 0 6px; }
-.presets button{ flex:1; font-size:12px; padding:5px; border:1px solid var(--line); background:#fafbfc; border-radius:0; cursor:pointer; }
+.presets button{ flex:1; font-size:12px; padding:5px; border:1px solid var(--control-border); background:#fff; border-radius:0; cursor:pointer; }
 .presets button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); position:relative; z-index:1; }
 .type-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
-.type-tabs button{ flex:1 1 40%; font-size:13px; padding:7px; border:1px solid var(--line); background:#fafbfc; border-radius:0; cursor:pointer; }
+.type-tabs button{ flex:1 1 40%; font-size:13px; padding:7px; border:1px solid var(--control-border); background:#fff; border-radius:0; cursor:pointer; }
 .type-tabs button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); position:relative; z-index:1; }
+/* hover：操作できることを示す */
+.type-tabs button:hover, .presets button:hover{ border-color:var(--accent); }
+/* focus：入力・選択中を明確に（アクセント枠＋リング） */
+.row input:focus, .row select:focus,
+.type-tabs button:focus-visible, .presets button:focus-visible{
+  outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(59,111,176,.22);
+}
 .hint{ font-size:11px; color:var(--muted); margin:6px 0 0; line-height:1.5; }
 .actions{ position:sticky; bottom:0; background:var(--panel); padding-top:10px; }
 .actions button{ width:100%; padding:11px; margin-top:8px; font-size:14px; font-weight:600; border:none; border-radius:0; cursor:pointer; }
