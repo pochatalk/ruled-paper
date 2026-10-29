@@ -55,7 +55,7 @@ function renderSVG(s, explicitSizeMm){
   const g=buildGeometry(s);
   const ptmm = 25.4/72; // pt -> mm (SVGはmm単位で描画)
   const size = explicitSizeMm ? `width="${g.w}mm" height="${g.h}mm"` : '';
-  const ff = "font-family=\"'Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif\"";
+  const ff = "font-family=\"'Zen Maru Gothic','Helvetica Neue',Helvetica,Arial,sans-serif\"";
   let out=`<svg ${size} viewBox="0 0 ${g.w} ${g.h}" xmlns="http://www.w3.org/2000/svg">`;
   out+=`<rect x="0" y="0" width="${g.w}" height="${g.h}" fill="#ffffff"/>`;
   for(const l of g.lines){
@@ -91,7 +91,7 @@ function headerImage(s, g){
   cv.width=Math.round(widthMm*sc); cv.height=Math.round(heightMm*sc);
   const ctx=cv.getContext('2d');
   ctx.fillStyle='#000';
-  ctx.font=`${s.headerSize*(dpi/72)}px "Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif`;
+  ctx.font=`${s.headerSize*(dpi/72)}px "Zen Maru Gothic","Helvetica Neue",Helvetica,Arial,sans-serif`;
   ctx.textBaseline='alphabetic';
   const by=baseMm*sc;
   if(s.hLeft){ ctx.textAlign='left'; ctx.fillText(s.hLeft,0,by); }
@@ -108,6 +108,10 @@ async function buildPDF(){
   const doc=await PDFDocument.create();
   const c=hexToRgb(s.lineColor);
   const col=rgb(c.r,c.g,c.b);
+  // ヘッダーを canvas 化する前に Zen Maru Gothic の読み込みを待つ（未ロードだと代替フォントで描画されるため）
+  if(document.fonts && document.fonts.load){
+    try{ await document.fonts.load(`${s.headerSize}pt "Zen Maru Gothic"`); await document.fonts.ready; }catch(e){}
+  }
   const hdr=headerImage(s,g);
   let hdrPng=null;
   if(hdr) hdrPng=await doc.embedPng(hdr.dataUrl);
