@@ -10,7 +10,7 @@ header.top{ padding:12px 20px; background:var(--panel); border-bottom:1px solid 
 header.top h1{ margin:0; font-size:17px; font-weight:700; }
 header.top p{ margin:3px 0 0; font-size:12px; color:var(--muted); }
 .layout{ display:flex; gap:0; align-items:flex-start; }
-.panel{ width:340px; flex:none; padding:16px; height:calc(100vh - 55px); overflow-y:auto; background:var(--panel); border-right:1px solid var(--line); }
+.panel{ width:340px; flex:none; padding:16px 16px 0; height:calc(100vh - 55px); overflow-y:auto; background:var(--panel); border-right:1px solid var(--line); }
 .preview-wrap{ flex:1; padding:24px; height:calc(100vh - 55px); overflow:auto; display:flex; flex-direction:column; align-items:center; }
 .preview-note{ font-size:12px; color:var(--muted); margin-bottom:12px; }
 #preview svg{ background:#fff; box-shadow:0 4px 18px rgba(0,0,0,.12); max-width:100%; height:auto; }
@@ -23,10 +23,23 @@ legend{ font-size:12px; font-weight:700; color:var(--accent); padding:0 6px; }
 .row input[type=color]{ width:44px; height:28px; padding:0; border:1px solid var(--control-border); border-radius:0; background:none; }
 .presets{ display:flex; gap:6px; margin:4px 0 6px; }
 .presets button{ flex:1; font-size:12px; padding:5px; border:1px solid var(--control-border); background:#fff; border-radius:0; cursor:pointer; }
-.presets button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); position:relative; z-index:1; }
+.presets button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 3px 10px rgba(0,0,0,.30); position:relative; z-index:1; }
 .type-tabs{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
 .type-tabs button{ flex:1 1 40%; font-size:13px; padding:7px; border:1px solid var(--control-border); background:#fff; border-radius:0; cursor:pointer; }
-.type-tabs button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 2px 6px rgba(0,0,0,.22); position:relative; z-index:1; }
+.type-tabs button.active{ background:#fff; color:var(--text); border-color:var(--accent); box-shadow:0 3px 10px rgba(0,0,0,.30); position:relative; z-index:1; }
+/* 操作できる要素すべてに立体感（通常＝浮き／ホバー＝持ち上がり／押下＝沈む） */
+.row input[type=number], .row input[type=text], .row select, .row input[type=color],
+.type-tabs button, .presets button, .checkrow input[type=checkbox]{
+  box-shadow:0 2px 6px rgba(0,0,0,.18); transition:box-shadow .12s ease, transform .12s ease;
+}
+.row input[type=number]:hover, .row input[type=text]:hover, .row select:hover, .row input[type=color]:hover,
+.type-tabs button:hover, .presets button:hover, .checkrow input[type=checkbox]:hover{
+  box-shadow:0 4px 12px rgba(0,0,0,.24); transform:translateY(-1px);
+}
+.row input[type=number]:active, .row input[type=text]:active, .row select:active, .row input[type=color]:active,
+.type-tabs button:active, .presets button:active, .checkrow input[type=checkbox]:active{
+  box-shadow:0 1px 3px rgba(0,0,0,.24); transform:translateY(1px);
+}
 /* hover：操作できることを示す */
 .type-tabs button:hover, .presets button:hover{ border-color:var(--accent); }
 /* focus：入力・選択中を明確に（アクセント枠＋リング） */
@@ -35,11 +48,15 @@ legend{ font-size:12px; font-weight:700; color:var(--accent); padding:0 6px; }
   outline:none; border-color:var(--accent); box-shadow:0 0 0 2px rgba(59,111,176,.22);
 }
 .hint{ font-size:11px; color:var(--muted); margin:6px 0 0; line-height:1.5; }
-.actions{ position:sticky; bottom:0; background:var(--panel); padding-top:10px; }
+.actions{ position:sticky; bottom:0; background:var(--panel); margin:0 -16px 0; padding:10px 16px 16px; }
 .actions button{ width:100%; padding:11px; margin-top:8px; font-size:14px; font-weight:600; border:none; border-radius:0; cursor:pointer; }
 #btnPdf{ background:var(--accent); color:#fff; }
 #btnPrint{ background:#eef1f6; color:#333; }
 #btnReset{ background:none; color:var(--muted); font-weight:400; font-size:12px; text-decoration:underline; padding:4px; }
+/* 主要ボタンは枠の外に影をつけて立体感を出す */
+#btnPdf, #btnPrint{ box-shadow:0 2px 6px rgba(0,0,0,.20); transition:box-shadow .12s ease, transform .12s ease; }
+#btnPdf:hover, #btnPrint:hover{ box-shadow:0 4px 12px rgba(0,0,0,.26); transform:translateY(-1px); }
+#btnPdf:active, #btnPrint:active{ box-shadow:0 1px 3px rgba(0,0,0,.25); transform:translateY(1px); }
 .checkrow{ display:flex; align-items:center; gap:6px; margin:8px 0; font-size:13px; }
 #printArea{ display:none; }
 @media print{
